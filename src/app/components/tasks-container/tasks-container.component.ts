@@ -6,6 +6,7 @@ import { UpdateTaskData } from 'src/app/abstraction/task.abstraction';
 import { Task } from 'src/app/models/task';
 import { UnsubscribeService } from 'src/app/services/unsubscribe.service';
 import { CreateTask } from 'src/app/state/actions/create-task';
+import { DeleteTask } from 'src/app/state/actions/delete-task';
 import { GetTasks } from 'src/app/state/actions/get-tasks';
 import { UpdateTask } from 'src/app/state/actions/update-task';
 
@@ -49,6 +50,6 @@ export class TasksContainerComponent {
   }
 
   deleteTask(id: Id): void {
-
+    this.store.dispatch(new DeleteTask(id))
   }
 }

@@ -22,8 +22,6 @@ export class TaskComponent {
 
 
   ngOnInit() {
-    console.log(this.task);
-
     this.taskName.patchValue(this.task.name);
     this.taskExpirationDate.patchValue(new Date(this.task.expirationDate));
     this.taskStatus.patchValue(this.task.status);

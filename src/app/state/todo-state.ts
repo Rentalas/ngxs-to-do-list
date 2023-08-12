@@ -1,11 +1,11 @@
-import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { Injectable } from "@angular/core";
-import { GetTasks } from "./actions/get-tasks";
+import { Action, State, StateContext } from "@ngxs/store";
 import { Task } from "../models/task";
 import { TaskDaoService } from "../services/task-dao.service";
-import { UpdateTask } from "./actions/update-task";
 import { CreateTask } from "./actions/create-task";
-import { tasks } from "../data/mockTasks";
+import { DeleteTask } from "./actions/delete-task";
+import { GetTasks } from "./actions/get-tasks";
+import { UpdateTask } from "./actions/update-task";
 
 @State({
     name: 'todo',
@@ -22,13 +22,7 @@ export class ToDoState {
 
     @Action(GetTasks)
     getTasks(ctx: StateContext<{tasks: Task[]}>, action: GetTasks) {
-        console.log(ctx, action);
-
         const state = ctx.getState();
-        // ctx.setState({
-        //     ...state,
-        //     tasks: Array.from({length:5}).map(() => Task.createNewTask())
-        // })
         this.taskDaoService.getTasks().subscribe(tasks => {
             ctx.setState({
                 ...state,
@@ -39,7 +33,6 @@ export class ToDoState {
 
     @Action(UpdateTask)
     updateTask(ctx: StateContext<{tasks: Task[]}>, action: UpdateTask) {
-        console.log(ctx, action);
         const { id, propName, value, temporaryId } = action.updateTaskData;
         const state = ctx.getState();
         const taskToUpdate = state.tasks.find(task => {
@@ -83,6 +76,17 @@ export class ToDoState {
         })
     }
 
+    @Action(DeleteTask)
+    deleteTask(ctx: StateContext<{tasks: Task[]}>, action: DeleteTask) {
+        const state = ctx.getState();
+        this.taskDaoService.deleteTask(action.id);
+        const newTasks = state.tasks.filter(task => task.id !== action.id);
+        ctx.setState({
+            ...state,
+            tasks: newTasks,
+        });
+    }
+
     private registerTask(
         taskToUpdate: Task,
         ctx: StateContext<{tasks: Task[]}>,
@@ -100,10 +104,4 @@ export class ToDoState {
             });
         })
     }
-
-    // //next to learn
-    // @Selector()
-    // static username(state: AppDependency) {
-    //     return state.username;
-    // }
 }
